@@ -6,6 +6,7 @@ import ProfileSpecializations from "./components/ProfilePage/ProfileSpecializati
 import Footer from "../components/Footer";
 import ProfileProgram from "./components/ProfilePage/ProfileProgram";
 import ProfileApproach from "./components/ProfilePage/ProfileApproach";
+import ProfileFeedback from "./components/ProfilePage/ProfileFeedback";
 const ProfilePage = () => {
   return (
     <>
@@ -15,9 +16,13 @@ const ProfilePage = () => {
       <ProfileSpecializations />
       <ProfileProgram />
       <ProfileApproach />
+      <ProfileFeedback/>
       <Footer />
+      
     </>
   );
 };
 
 export default ProfilePage;
+
+
