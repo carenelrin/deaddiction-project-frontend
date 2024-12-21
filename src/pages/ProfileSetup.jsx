@@ -4,11 +4,14 @@ import TreatmentInformation from "./components/ProfileSetup/TreatmentInformation
 import OperationalDetails from "./components/ProfileSetup/OperationalDetails";
 import Confirmation from "./components/ProfileSetup/Confirmation";
 import Navbar from "../components/Navbar";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function ProfileSetup() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   // Function to check if a step is complete
   const isStepComplete = (step) => {
@@ -53,13 +56,63 @@ function ProfileSetup() {
     setCurrentStep(currentStep - 1);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const validationErrors = validateForm(formData);
     if (Object.keys(validationErrors).length === 0) {
-      // No errors, handle final submission
-      console.log(formData);
-      // You can add code here to send the data to a server or perform other actions
+      const dataToSubmit = {
+        name: formData.name,
+        state: formData.state,
+        city: formData.city,
+        location: formData.location,
+        phone: formData.phone,
+        pin: formData.pin,
+        facilityType: [
+          formData.residential ? "Residential Facility" : "",
+          formData.outpatient ? "Outpatient Clinic" : "",
+          formData.dayprogram ? "Day Program" : "",
+          formData.detoxification ? "Detoxification" : "",
+        ].filter(Boolean),
+        profilePhotoURL: formData.profilePhoto,
+        specialization: [
+          formData.alchohol ? "Alcohol Addiction" : "",
+          formData.drug ? "Drug Addiction" : "",
+          formData.behavioural ? "Behavioral Health" : "",
+        ].filter(Boolean),
+        treatmentApproaches: formData.approach,
+        treatmentPrograms: formData.programs,
+        numberOfBeds: formData.beds,
+        numberOfStaff: formData.staff,
+        operatingHours: formData.founded,
+        description: formData.description, // Add description if needed
+        ownershipType: [
+          formData.private ? "Private" : "",
+          formData.government ? "Government" : "",
+          formData.nonprofit ? "Nonprofit" : "",
+        ].filter(Boolean),
+      };
+      const token = localStorage.getItem("jwtToken");
+      try {
+        // Send POST request to backend
+        const response = await axios.post(
+          "https://deaddiction-project-backend.onrender.com/api/centre/profile",
+          dataToSubmit,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Handle response
+        if (response.status === 200) {
+          navigate("/profilepage");
+        } else {
+          alert("Failed to save profile.");
+        }
+      } catch (error) {
+        console.error("Error saving profile:", error);
+      }
     } else {
       // Errors found, jump to the relevant step and display errors
       setErrors(validationErrors);

@@ -1,15 +1,54 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
+    const loginData = {
+      email: email,
+      password: password,
+    };
+    try {
+      // Make a POST request to the login API
+      const response = await axios.post(
+        "https://deaddiction-project-backend.onrender.com/api/auth/login",
+        loginData,
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      // Extract and store the JWT token
+      const token = response.data.token;
+      localStorage.setItem("jwtToken", token);
+
+      const profileResponse = await axios.get(
+        "https://deaddiction-project-backend.onrender.com/api/centre/profile-completion",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const { profileCompleted } = profileResponse.data;
+      if (profileCompleted) {
+        navigate("/profilepage");
+      } else {
+        navigate("/profile-setup");
+      }
+    } catch (error) {
+      console.error("Login failed:", error.response?.data || error.message);
+
+      // Display backend error message
+      const errorMessage =
+        error.response?.data?.message || "Login failed. Please try again.";
+      alert(errorMessage);
+    }
   };
 
   return (

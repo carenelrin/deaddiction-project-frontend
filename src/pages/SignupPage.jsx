@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function SignupPage() {
   const [emailError, setEmailError] = useState("");
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!re.test(email)) {
@@ -49,7 +51,7 @@ function SignupPage() {
     return null; // No error
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const passwordErr = validatePassword(password);
@@ -66,9 +68,29 @@ function SignupPage() {
     }
 
     // Handle signup logic here if no errors
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Centre ID:", centreId);
+    const signupData = {
+      email: email,
+      password: password,
+    };
+
+    try {
+      // Make a POST request to the signup API
+      const response = await axios.post(
+        "https://deaddiction-project-backend.onrender.com/api/auth/register",
+        signupData,
+        { headers: { "Content-Type": "application/json" } } // Set appropriate headers
+      );
+
+      // Show success message or redirect user
+      navigate("/login");
+    } catch (error) {
+      console.error("Signup failed:", error.response?.data || error.message);
+
+      // Handle and display the backend error message
+      const errorMessage =
+        error.response?.data?.message || "Signup failed. Please try again.";
+      alert(errorMessage);
+    }
   };
 
   return (
@@ -154,22 +176,6 @@ function SignupPage() {
                 {confirmPasswordError}
               </p>
             )}
-          </div>
-          <div>
-            <label
-              htmlFor="centreId"
-              className="block text-gray-700 font-medium mb-2"
-            >
-              Centre ID*
-            </label>
-            <input
-              type="text"
-              id="centreId"
-              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={centreId}
-              onChange={(e) => setCentreId(e.target.value)}
-              required
-            />
           </div>
           <div className="text-center text-sm text-gray-600">
             Already have an account?{" "}
