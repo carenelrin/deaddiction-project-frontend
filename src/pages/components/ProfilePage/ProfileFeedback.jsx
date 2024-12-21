@@ -32,7 +32,7 @@ const ProfileFeedback = () => {
     <div className="flex flex-col md:flex-row items-start justify-center gap-8 bg-[#f4f7fc] p-8 rounded-lg shadow-lg">
       {/* Feedback Form */}
       <div className="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-[#458FF6] mb-4">Profile Feedback</h2>
+        <h2 className="text-3xl font-semibold text-sky-700">Center Feedback</h2>
         <form className="space-y-6">
           <div>
             <label
@@ -76,7 +76,7 @@ const ProfileFeedback = () => {
 
       {/* Feedback Display */}
       <div className="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-[#458FF6] mb-4">User Feedback</h2>
+        <h2 className="text-3xl font-semibold text-sky-700 mb-4">User Feedback</h2>
         {feedbacks.length === 0 ? (
           <p className="text-gray-500 text-lg">No feedback available yet.</p>
         ) : (
