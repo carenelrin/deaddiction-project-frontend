@@ -4,20 +4,21 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 const ProfileFeedback = () => {
   const [feedbacks] = useState([
     {
-        name: "Aman Kumar",
-        feedback: "Great platform! Helped me a lot.",
-        date: "2024-12-15",
-      },
-      {
-        name: "Pushkar Jha",
-        feedback: "Excellent service and user-friendly interface.",
-        date: "2024-12-16",
-      },
-      {
-        name: "Vishal Sangtani",
-        feedback:"The features offered are incredible and really streamlined my workflow.",
-        date: "2024-12-17",
-      },
+      name: "Aman Kumar",
+      feedback: "Great platform! Helped me a lot.",
+      date: "2024-12-15",
+    },
+    {
+      name: "Pushkar Jha",
+      feedback: "Excellent service and user-friendly interface.",
+      date: "2024-12-16",
+    },
+    {
+      name: "Vishal Sangtani",
+      feedback:
+        "The features offered are incredible and really streamlined my workflow.",
+      date: "2024-12-17",
+    },
   ]);
 
   const [showAllFeedback, setShowAllFeedback] = useState(false);
@@ -26,7 +27,9 @@ const ProfileFeedback = () => {
     setShowAllFeedback((prev) => !prev);
   };
 
-  const displayedFeedbacks = showAllFeedback ? feedbacks : feedbacks.slice(0, 2);
+  const displayedFeedbacks = showAllFeedback
+    ? feedbacks
+    : feedbacks.slice(0, 2);
 
   return (
     <div className="flex flex-col md:flex-row items-start justify-center gap-8 bg-[#f4f7fc] p-8 rounded-lg shadow-lg">
@@ -76,7 +79,9 @@ const ProfileFeedback = () => {
 
       {/* Feedback Display */}
       <div className="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-3xl font-semibold text-sky-700 mb-4">User Feedback</h2>
+        <h2 className="text-3xl font-semibold text-sky-700 mb-4">
+          User Feedback
+        </h2>
         {feedbacks.length === 0 ? (
           <p className="text-gray-500 text-lg">No feedback available yet.</p>
         ) : (

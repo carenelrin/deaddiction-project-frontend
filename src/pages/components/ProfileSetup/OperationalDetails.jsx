@@ -86,7 +86,7 @@ function OperationalDetails({ formData, handleChange, errors }) {
             Operating Hours*
           </label>
           <input
-            type="number"
+            type="text"
             id="founded"
             name="founded"
             value={formData.founded || ""}
