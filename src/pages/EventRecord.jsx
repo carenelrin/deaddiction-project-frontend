@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 import {
   Table,
   TableBody,
@@ -12,36 +13,58 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom"; 
-
-const events = [
-  {
-    id: 1,
-    eventName: "Music Concert",
-    name: "John Doe",
-    description: "Live music performances at the city hall.",
-  },
-  {
-    id: 2,
-    eventName: "Tech Conference",
-    name: "Jane Smith",
-    description: "Discussing innovations in technology.",
-  },
-  {
-    id: 3,
-    eventName: "Art Exhibition",
-    name: "Alice Brown",
-    description: "Exhibit of contemporary art by local artists.",
-  },
-];
+import { Delete } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const EventRecord = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [eventsList, setEventsList] = useState(events);
+  const [eventsList, setEventsList] = useState([]);
+  const token = localStorage.getItem("jwtToken");
 
+  // Fetch events from the backend
+  const fetchEvents = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        "https://deaddiction-project-backend.onrender.com/api/centre/events",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setEventsList(response.data);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
+  // Delete event from the backend
+  const handleDelete = useCallback(
+    async (id) => {
+      try {
+        const deleteUrl = `https://deaddiction-project-backend.onrender.com/api/centre/events/${id}`;
+        await axios.delete(deleteUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        // Remove the deleted event from the state
+        setEventsList((prevEvents) => prevEvents.filter((event) => event._id !== id));
+        console.log("Event deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting event:", error);
+      }
+    },
+    [token]
+  );
+
+  // Show event details
   const handleDetailClick = useCallback((event) => {
     setSelectedEvent(event);
     setOpenModal(true);
@@ -52,20 +75,12 @@ const EventRecord = () => {
     setSelectedEvent(null);
   }, []);
 
-  const handleDelete = useCallback(
-    (id) => {
-      const updatedEvents = eventsList.filter((event) => event.id !== id);
-      setEventsList(updatedEvents);
-    },
-    [eventsList]
-  );
-
   const handleAddNewEvent = () => {
-    navigate("/create-event"); 
+    navigate("/create-event");
   };
 
   const handleGoToProfile = () => {
-    navigate("/profilepage"); 
+    navigate("/profilepage");
   };
 
   return (
@@ -100,7 +115,7 @@ const EventRecord = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={handleGoToProfile} 
+          onClick={handleGoToProfile}
         >
           Go to Profile Page
         </Button>
@@ -116,7 +131,7 @@ const EventRecord = () => {
         <Table>
           <TableHead sx={{ bgcolor: "primary.main" }}>
             <TableRow>
-              {["Event Title", "Name", "Action"].map((header) => (
+              {["Event Title", "Date", "Action"].map((header) => (
                 <TableCell
                   key={header}
                   sx={{
@@ -133,14 +148,14 @@ const EventRecord = () => {
           <TableBody>
             {eventsList.map((row) => (
               <TableRow
-                key={row.id}
+                key={row._id}
                 sx={{
                   bgcolor: "#f9f9f9",
                   "&:hover": { bgcolor: "#f1f5fb" },
                 }}
               >
-                <TableCell>{row.eventName}</TableCell>
-                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.title}</TableCell>
+                <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
@@ -154,7 +169,7 @@ const EventRecord = () => {
                     variant="contained"
                     color="secondary"
                     sx={{ mr: 1 }}
-                    onClick={() => handleDelete(row.id)}
+                    onClick={() => handleDelete(row._id)}
                     startIcon={<Delete />}
                   >
                     Delete
@@ -202,7 +217,11 @@ const EventRecord = () => {
               }}
             >
               <Typography sx={{ mb: 1 }}>
-                <strong>Description:</strong> {selectedEvent.description}
+                <strong>Description:</strong> {selectedEvent.details}
+              </Typography>
+              <Typography sx={{ mb: 1 }}>
+                <strong>Date:</strong>{" "}
+                {new Date(selectedEvent.date).toLocaleDateString()}
               </Typography>
             </Box>
             <Box sx={{ textAlign: "center" }}>
