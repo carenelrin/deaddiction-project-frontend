@@ -16,7 +16,7 @@ const ProfilePage = () => {
       <ProfileSpecializations />
       <ProfileProgram />
       <ProfileApproach />
-      <ProfileFeedback />
+      {/* <ProfileFeedback /> */}
       <Footer />
     </>
   );

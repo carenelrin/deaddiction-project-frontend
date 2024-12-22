@@ -1,45 +1,53 @@
-import React from "react";
-import { FaPlusCircle } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
 
 const ProfileProgram = () => {
-  const programs = [
-    {
-      title: "Alcohol Recovery",
-      description: "Comprehensive recovery support for alcohol addiction.",
-    },
-    {
-      title: "Mental Health Support",
-      description: "Holistic treatments for managing mental health disorders.",
-    },
-  ];
+  const [programs, setPrograms] = useState([]); 
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      const jwtToken = localStorage.getItem("jwtToken");
+      try {
+        const response = await fetch(
+          "https://deaddiction-project-backend.onrender.com/api/centre/profile",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+        setPrograms(data.centre.treatmentPrograms || []); 
+      } catch (error) {
+        console.error("Error fetching programs:", error);
+        setPrograms([]);
+      }
+    };
+
+    fetchPrograms();
+  }, []);
 
   return (
-    <div className="bg-gradient-to-br from-sky-100 to-white p-8 mx-auto mt-[50px] border border-sky-300 ">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h2 className="text-3xl font-semibold text-sky-700">Programs</h2>
-          <p className="text-lg text-gray-600">
-            Explore our specialized programs designed for effective recovery and
-            mental well-being.
-          </p>
-        </div>
+    <div className="bg-gradient-to-br from-sky-100 to-white p-8 max-w-8xl mx-auto border border-sky-200 mt-[50px] mb-[50px]">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-semibold text-sky-700 mb-6">Our Programs</h2>
+        <p className="text-lg text-gray-700">
+          We offer a variety of programs to cater to different needs.
+        </p>
       </div>
 
-      <ul className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {programs.map((program, index) => (
-          <li
+          <div
             key={index}
-            className="flex justify-between items-center p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-all"
+            className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out flex flex-col items-center text-center border-2 border-sky-200"
           >
-            <div className="flex flex-col space-y-2">
-              <h3 className="text-xl font-semibold text-sky-700">
-                {program.title}
-              </h3>
-              <p className="text-sm text-gray-500">{program.description}</p>
-            </div>
-          </li>
+            <h3 className="text-xl font-semibold text-sky-700 mb-4">{program}</h3>
+            <p className="text-base text-gray-600">{program}</p>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
