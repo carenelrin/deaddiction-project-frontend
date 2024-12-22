@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const ProfileProgram = () => {
+  const { centerId } = useParams(); 
   const [programs, setPrograms] = useState([]);
 
   useEffect(() => {
     const fetchPrograms = async () => {
       const jwtToken = localStorage.getItem("jwtToken");
       try {
-        const response = await fetch(
+        const profileResponse = await fetch(
           "https://deaddiction-project-backend.onrender.com/api/centre/profile",
           {
             method: "GET",
@@ -16,9 +18,23 @@ const ProfileProgram = () => {
             },
           }
         );
+        const profileData = await profileResponse.json();
+        const additionalResponse = await fetch(
+          `https://deaddiction-project-backend.onrender.com/api/search/${centerId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+        const additionalData = await additionalResponse.json();
 
-        const data = await response.json();
-        setPrograms(data.centre.treatmentPrograms || []);
+        const combinedPrograms = [
+          ...(profileData.centre?.treatmentPrograms || []),
+          ...(additionalData.centreDetails?.additionalPrograms || []),
+        ];
+        setPrograms([...new Set(combinedPrograms)]);
       } catch (error) {
         console.error("Error fetching programs:", error);
         setPrograms([]);
@@ -26,7 +42,7 @@ const ProfileProgram = () => {
     };
 
     fetchPrograms();
-  }, []);
+  }, [centerId]);
 
   return (
     <div className="bg-gradient-to-br from-sky-100 to-white p-8 max-w-8xl mx-auto border border-sky-200 mt-[50px] mb-[50px]">
@@ -40,17 +56,23 @@ const ProfileProgram = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {programs.map((program, index) => (
-          <div
-            key={index}
-            className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out flex flex-col items-center text-center border-2 border-sky-200"
-          >
-            <h3 className="text-xl font-semibold text-sky-700 mb-4">
-              {program}
-            </h3>
-            <p className="text-base text-gray-600">{program}</p>
+        {programs.length > 0 ? (
+          programs.map((program, index) => (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out flex flex-col items-center text-center border-2 border-sky-200"
+            >
+              <h3 className="text-xl font-semibold text-sky-700 mb-4">
+                {program}
+              </h3>
+              <p className="text-base text-gray-600">{program}</p>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full text-center text-gray-600">
+            No programs available at the moment.
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

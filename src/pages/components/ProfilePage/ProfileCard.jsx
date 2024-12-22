@@ -8,38 +8,46 @@ import {
   FaBuilding,
   FaEnvelope,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ProfileCard = () => {
   const [profile, setProfile] = useState(null);
+  const { centerId } = useParams(); 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const jwtToken = localStorage.getItem("jwtToken");
-        if (!jwtToken) {
-          console.error("No token found");
-          return;
-        }
-        const response = await axios.get(
-          "https://deaddiction-project-backend.onrender.com/api/centre/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
+        let response;
+        if (centerId) {
+          response = await axios.get(
+            `https://deaddiction-project-backend.onrender.com/api/search/${centerId}`
+          );
+        } else {
+          const jwtToken = localStorage.getItem("jwtToken");
+          if (!jwtToken) {
+            console.error("No token found");
+            return;
           }
-        );
-        console.log(response.data);
+          response = await axios.get(
+            "https://deaddiction-project-backend.onrender.com/api/centre/profile",
+            {
+              headers: {
+                Authorization: `Bearer ${jwtToken}`,
+              },
+            }
+          );
+        }
 
-        setProfile(response.data.centre);
+        console.log(response.data);
+        setProfile(response.data.centre || response.data); 
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
     };
 
     fetchProfile();
-  }, []);
+  }, [centerId]);
 
   const handleNavigation = (path) => {
     navigate(path);

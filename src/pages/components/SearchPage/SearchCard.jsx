@@ -1,6 +1,40 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const SearchCard = ({ centers }) => {
+  const navigate = useNavigate();
+
+  // Get JWT token from localStorage (or another storage mechanism)
+  const getToken = () => localStorage.getItem("jwtToken");
+
+  const handleCardClick = async (centerId) => {
+    try {
+      const token = getToken();
+
+      const response = await fetch(
+        `https://deaddiction-project-backend.onrender.com/api/search/${centerId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: `Bearer ${token}`, // Include JWT token in Authorization header
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // Navigate to the Profile Page with the center data
+      navigate(`/profilepage/${centerId}`, { state: data });
+    } catch (error) {
+      console.error("Error fetching center details:", error);
+    }
+  };
+
   if (!centers || centers.length === 0) {
     return (
       <div className="text-center py-10 text-gray-600">
@@ -16,6 +50,7 @@ const SearchCard = ({ centers }) => {
           <div
             key={index}
             className="searchcard max-w-full md:max-w-6xl mx-auto flex flex-col md:flex-row transition hover:shadow-xl duration-200 bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden cursor-pointer"
+            onClick={() => handleCardClick(center._id)} // Trigger detailed data fetch on card click
           >
             <div className="image-container h-56 bg-gray-200 flex items-center justify-center md:h-56 md:w-1/3">
               {center.profilePhotoURL ? (
@@ -42,7 +77,9 @@ const SearchCard = ({ centers }) => {
                   {center.city}, {center.state}
                 </h4>
                 <div className="mt-2">
-                  <h5 className="text-gray-600 font-medium text-sm">Specializations:</h5>
+                  <h5 className="text-gray-600 font-medium text-sm">
+                    Specializations:
+                  </h5>
                   <ul className="list-disc pl-6">
                     {center.specialization.map((spec, idx) => (
                       <li key={idx} className="text-gray-600 text-sm">

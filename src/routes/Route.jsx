@@ -25,6 +25,7 @@ const AppRoutes = () => {
         <Route path="/patientrecord" element={<PatientRecord />} />
         <Route path="/eventrecord" element={<EventRecord />} />
         <Route path="/profilepage" element={<ProfilePage />} />
+        <Route path="/profilepage/:centerId" element={<ProfilePage />} />
       </Routes>
     </Router>
   );
