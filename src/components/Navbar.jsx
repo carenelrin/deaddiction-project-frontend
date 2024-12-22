@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
 import { LoginButton, SignUpButton } from "./Buttons";
 
@@ -7,10 +7,13 @@ const LandingpageNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [navbarBg, setNavbarBg] = useState("bg-white");
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isRootRoute = location.pathname === "/";
   const isSearchRoute = location.pathname === "/search";
   const isProfilePage = location.pathname === "/profilepage";
+  
+  const isProfilePageWithId = location.pathname.startsWith("/profilepage/");
 
   const handleScroll = () => {
     if (window.scrollY > 50 || isSearchRoute) {
@@ -21,7 +24,9 @@ const LandingpageNavbar = () => {
   };
 
   useEffect(() => {
-    if (isProfilePage) {
+    if (isProfilePageWithId) {
+      setNavbarBg("bg-blue-100"); 
+    } else if (isProfilePage) {
       setNavbarBg("bg-blue-100");
     } else {
       window.addEventListener("scroll", handleScroll);
@@ -29,7 +34,7 @@ const LandingpageNavbar = () => {
         window.removeEventListener("scroll", handleScroll);
       };
     }
-  }, [isSearchRoute, isProfilePage, location.pathname]);
+  }, [isSearchRoute, isProfilePage, isProfilePageWithId, location.pathname]);
 
   return (
     <header
@@ -60,7 +65,7 @@ const LandingpageNavbar = () => {
               <SignUpButton />
             </>
           ) : (
-            <LogoutButton />
+            <LogoutButton onLogout={() => handleLogout(navigate)} />
           )}
         </div>
       </div>
@@ -74,7 +79,7 @@ const LandingpageNavbar = () => {
                 <SignUpButton />
               </>
             ) : (
-              <LogoutButton />
+              <LogoutButton onLogout={() => handleLogout(navigate)} />
             )}
           </nav>
         </div>
@@ -83,8 +88,16 @@ const LandingpageNavbar = () => {
   );
 };
 
-const LogoutButton = () => (
-  <button className="bg-[#458FF6] text-white py-2 px-4 rounded hover:bg-[#458FF6]-600 transition">
+const handleLogout = (navigate) => {
+  localStorage.removeItem("jwtToken");
+  navigate("/");
+};
+
+const LogoutButton = ({ onLogout }) => (
+  <button
+    className="bg-[#458FF6] text-white py-2 px-4 rounded hover:bg-[#458FF6]-600 transition"
+    onClick={onLogout}
+  >
     Logout
   </button>
 );
