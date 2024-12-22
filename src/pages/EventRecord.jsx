@@ -55,7 +55,9 @@ const EventRecord = () => {
           },
         });
         // Remove the deleted event from the state
-        setEventsList((prevEvents) => prevEvents.filter((event) => event._id !== id));
+        setEventsList((prevEvents) =>
+          prevEvents.filter((event) => event._id !== id)
+        );
         console.log("Event deleted successfully!");
       } catch (error) {
         console.error("Error deleting event:", error);
@@ -105,18 +107,10 @@ const EventRecord = () => {
           mb: 3,
         }}
       >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddNewEvent}
-        >
+        <Button variant="contained" color="primary" onClick={handleAddNewEvent}>
           Add New Event
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleGoToProfile}
-        >
+        <Button variant="contained" color="primary" onClick={handleGoToProfile}>
           Go to Profile Page
         </Button>
       </Box>
