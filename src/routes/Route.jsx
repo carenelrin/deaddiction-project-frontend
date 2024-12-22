@@ -10,6 +10,7 @@ import NewEventDataForm from "../pages/NewEventDataForm";
 import PatientRecord from "../pages/PatientRecord";
 import EventRecord from "../pages/EventRecord";
 import ProfilePage from "../pages/ProfilePage";
+import ChatWithAI from "../pages/ChatWithAI";
 
 const AppRoutes = () => {
   return (
@@ -26,6 +27,7 @@ const AppRoutes = () => {
         <Route path="/eventrecord" element={<EventRecord />} />
         <Route path="/profilepage" element={<ProfilePage />} />
         <Route path="/profilepage/:centerId" element={<ProfilePage />} />
+        <Route path="/chat" element={<ChatWithAI />} />
       </Routes>
     </Router>
   );
