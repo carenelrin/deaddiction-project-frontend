@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const NewPatientDataForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     age: "",
     gender: "",
-    mobileNo: "",
+    mobileNumber: "",
     address: "",
     admissionDate: "",
     dischargeDate: "",
@@ -14,6 +15,7 @@ const NewPatientDataForm = () => {
     progressSummary: "",
   });
 
+  const token = localStorage.getItem("jwtToken");
   const [errors, setErrors] = useState({});
 
   const validateField = (name, value) => {
@@ -28,7 +30,7 @@ const NewPatientDataForm = () => {
       case "gender":
         if (!value) error = "Gender is required.";
         break;
-      case "mobileNo":
+      case "mobileNumber":
         if (!/^\d{10}$/.test(value)) error = "Mobile number must be 10 digits.";
         break;
       case "address":
@@ -61,7 +63,7 @@ const NewPatientDataForm = () => {
     setErrors({ ...errors, [name]: validateField(name, value) });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
@@ -71,8 +73,45 @@ const NewPatientDataForm = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      console.log("Form submitted:", formData);
-      // Add your form submission logic here
+      try {
+        // Make a POST request to the backend
+        const response = await axios.post(
+          "https://deaddiction-project-backend.onrender.com/api/centre/patients",
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // Include JWT token
+            },
+          }
+        );
+
+        console.log("Patient data submitted successfully:", response.data);
+        alert("Patient data submitted successfully!");
+
+        // Optionally reset the form
+        setFormData({
+          name: "",
+          age: "",
+          gender: "",
+          mobileNumber: "",
+          address: "",
+          admissionDate: "",
+          dischargeDate: "",
+          problem: "",
+          treatmentSummary: "",
+          progressSummary: "",
+        });
+      } catch (error) {
+        console.error(
+          "Error submitting patient data:",
+          error.response?.data || error.message
+        );
+        alert(
+          error.response?.data?.message ||
+            "Failed to submit patient data. Please try again."
+        );
+      }
     }
   };
 
@@ -155,16 +194,16 @@ const NewPatientDataForm = () => {
             </label>
             <input
               type="tel"
-              name="mobileNo"
-              value={formData.mobileNo}
+              name="mobileNumber"
+              value={formData.mobileNumber}
               onChange={handleChange}
               placeholder="Enter patient's mobile number"
               className={`w-full px-4 py-2 border ${
-                errors.mobileNo ? "border-red-500" : "border-gray-300"
+                errors.mobileNumber ? "border-red-500" : "border-gray-300"
               } rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none`}
             />
-            {errors.mobileNo && (
-              <p className="text-red-500 text-sm mt-1">{errors.mobileNo}</p>
+            {errors.mobileNumber && (
+              <p className="text-red-500 text-sm mt-1">{errors.mobileNumber}</p>
             )}
           </div>
           <div className="grid grid-cols-2 gap-4">
