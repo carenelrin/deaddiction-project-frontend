@@ -223,19 +223,23 @@ const PatientRecord = () => {
               }}
             >
               <Typography sx={{ mb: 1 }}>
-                <strong>Admission Date:</strong> {selectedTreatment.admissionDate}
+                <strong>Admission Date:</strong>{" "}
+                {selectedTreatment.admissionDate}
               </Typography>
               <Typography sx={{ mb: 1 }}>
                 <strong>Problem:</strong> {selectedTreatment.problem}
               </Typography>
               <Typography sx={{ mb: 1 }}>
-                <strong>Treatment Summary:</strong> {selectedTreatment.treatmentSummary}
+                <strong>Treatment Summary:</strong>{" "}
+                {selectedTreatment.treatmentSummary}
               </Typography>
               <Typography sx={{ mb: 1 }}>
-                <strong>Progress Summary:</strong> {selectedTreatment.progressSummary}
+                <strong>Progress Summary:</strong>{" "}
+                {selectedTreatment.progressSummary}
               </Typography>
               <Typography sx={{ mb: 1 }}>
-                <strong>Discharge Date:</strong> {selectedTreatment.dischargeDate}
+                <strong>Discharge Date:</strong>{" "}
+                {selectedTreatment.dischargeDate}
               </Typography>
             </Box>
             <Box sx={{ textAlign: "center" }}>
