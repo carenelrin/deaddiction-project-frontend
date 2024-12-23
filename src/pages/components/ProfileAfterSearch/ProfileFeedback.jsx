@@ -1,27 +1,64 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
-const ProfileFeedback = () => {
-  const [feedbacks] = useState([
-    {
-      name: "Aman Kumar",
-      feedback: "Great platform! Helped me a lot.",
-      date: "2024-12-15",
-    },
-    {
-      name: "Pushkar Jha",
-      feedback: "Excellent service and user-friendly interface.",
-      date: "2024-12-16",
-    },
-    {
-      name: "Vishal Sangtani",
-      feedback:
-        "The features offered are incredible and really streamlined my workflow.",
-      date: "2024-12-17",
-    },
-  ]);
-
+const ProfileFeedback = ({ centreId }) => {
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showAllFeedback, setShowAllFeedback] = useState(false);
+  const [name, setName] = useState(""); // State for name
+  const [feedback, setFeedback] = useState(""); // State for feedback
+  const [submitting, setSubmitting] = useState(false); // State for form submission loading
+
+  // Fetch feedback data when the centreId changes
+  useEffect(() => {
+    if (!centreId) return;
+
+    const fetchFeedbacks = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `https://deaddiction-project-backend.onrender.com/api/centre/${centreId}/feedback`
+        );
+        setFeedbacks(response.data.feedbacks);
+      } catch (err) {
+        setError("Failed to fetch feedbacks");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeedbacks();
+  }, [centreId]);
+
+  // Handle feedback form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name || !feedback) return;
+
+    try {
+      setSubmitting(true);
+      const newFeedback = { name, feedback };
+
+      // Send POST request to submit feedback
+      const response = await axios.post(
+        `https://deaddiction-project-backend.onrender.com/api/centre/${centreId}/feedback`,
+        newFeedback
+      );
+
+      // Update the state with the new feedback
+      setFeedbacks((prev) => [response.data.feedback, ...prev]);
+
+      // Clear the form fields
+      setName("");
+      setFeedback("");
+    } catch (err) {
+      setError("Failed to submit feedback");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const toggleShowMore = () => {
     setShowAllFeedback((prev) => !prev);
@@ -36,7 +73,7 @@ const ProfileFeedback = () => {
       {/* Feedback Form */}
       <div className="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-3xl font-semibold text-sky-700">Center Feedback</h2>
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label
               htmlFor="name"
@@ -48,6 +85,8 @@ const ProfileFeedback = () => {
               type="text"
               id="name"
               name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#458FF6]"
               placeholder="Enter your name"
               required
@@ -63,6 +102,8 @@ const ProfileFeedback = () => {
             <textarea
               id="feedback"
               name="feedback"
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#458FF6] h-32"
               placeholder="Write your feedback here"
               required
@@ -70,9 +111,12 @@ const ProfileFeedback = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-[#458FF6] text-white text-lg font-semibold py-3 rounded-lg hover:bg-[#367bd7] transition duration-300"
+            disabled={submitting}
+            className={`w-full text-white text-lg font-semibold py-3 rounded-lg ${
+              submitting ? "bg-gray-500" : "bg-[#458FF6] hover:bg-[#367bd7]"
+            } transition duration-300`}
           >
-            Submit Feedback
+            {submitting ? "Submitting..." : "Submit Feedback"}
           </button>
         </form>
       </div>
@@ -82,7 +126,11 @@ const ProfileFeedback = () => {
         <h2 className="text-3xl font-semibold text-sky-700 mb-4">
           User Feedback
         </h2>
-        {feedbacks.length === 0 ? (
+        {loading ? (
+          <p className="text-gray-500 text-lg">Loading feedback...</p>
+        ) : error ? (
+          <p className="text-red-500 text-lg">{error}</p>
+        ) : feedbacks.length === 0 ? (
           <p className="text-gray-500 text-lg">No feedback available yet.</p>
         ) : (
           <ul className="space-y-6">

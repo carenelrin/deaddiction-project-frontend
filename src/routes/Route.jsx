@@ -11,6 +11,7 @@ import PatientRecord from "../pages/PatientRecord";
 import EventRecord from "../pages/EventRecord";
 import ProfilePage from "../pages/ProfilePage";
 import ChatWithAI from "../pages/ChatWithAI";
+import Searchprofilepage from "../pages/ProfileAfterSearch";
 
 const AppRoutes = () => {
   return (
@@ -26,7 +27,8 @@ const AppRoutes = () => {
         <Route path="/patientrecord" element={<PatientRecord />} />
         <Route path="/eventrecord" element={<EventRecord />} />
         <Route path="/profilepage" element={<ProfilePage />} />
-        <Route path="/profilepage/:centerId" element={<ProfilePage />} />
+        <Route path="/searchprofilepage" element={<Searchprofilepage />} />
+        <Route path="/searchprofilepage/:centerId" element={<Searchprofilepage />} />
         <Route path="/chat" element={<ChatWithAI />} />
       </Routes>
     </Router>

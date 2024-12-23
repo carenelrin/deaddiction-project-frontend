@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom"; 
 import Navbar from "../components/Navbar";
 import ProfileCard from "./components/ProfilePage/ProfileCard";
 import ProfileDescription from "./components/ProfilePage/ProfileDescription";
@@ -6,8 +7,10 @@ import ProfileSpecializations from "./components/ProfilePage/ProfileSpecializati
 import Footer from "../components/Footer";
 import ProfileProgram from "./components/ProfilePage/ProfileProgram";
 import ProfileApproach from "./components/ProfilePage/ProfileApproach";
-import ProfileFeedback from "./components/ProfilePage/ProfileFeedback";
+
+
 const ProfilePage = () => {
+
   return (
     <>
       <Navbar />
@@ -16,7 +19,7 @@ const ProfilePage = () => {
       <ProfileSpecializations />
       <ProfileProgram />
       <ProfileApproach />
-      {/* <ProfileFeedback /> */}
+      
       <Footer />
     </>
   );
