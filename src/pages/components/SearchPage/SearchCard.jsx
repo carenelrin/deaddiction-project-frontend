@@ -4,20 +4,14 @@ import { useNavigate } from "react-router-dom";
 const SearchCard = ({ centers }) => {
   const navigate = useNavigate();
 
-  // Get JWT token from localStorage (or another storage mechanism)
-  const getToken = () => localStorage.getItem("jwtToken");
-
   const handleCardClick = async (centerId) => {
     try {
-      const token = getToken();
-
       const response = await fetch(
         `https://deaddiction-project-backend.onrender.com/api/search/${centerId}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            // Authorization: `Bearer ${token}`, // Include JWT token in Authorization header
           },
         }
       );
@@ -27,9 +21,7 @@ const SearchCard = ({ centers }) => {
       }
 
       const data = await response.json();
-
-      // Navigate to the Profile Page with the center data
-      navigate(`/profilepage/${centerId}`, { state: data });
+      navigate(`/searchprofilepage/${centerId}`, { state: data });
     } catch (error) {
       console.error("Error fetching center details:", error);
     }
@@ -50,7 +42,7 @@ const SearchCard = ({ centers }) => {
           <div
             key={index}
             className="searchcard max-w-full md:max-w-6xl mx-auto flex flex-col md:flex-row transition hover:shadow-xl duration-200 bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden cursor-pointer"
-            onClick={() => handleCardClick(center._id)} // Trigger detailed data fetch on card click
+            onClick={() => handleCardClick(center._id)}
           >
             <div className="image-container h-56 bg-gray-200 flex items-center justify-center md:h-56 md:w-1/3">
               {center.profilePhotoURL ? (
@@ -67,7 +59,6 @@ const SearchCard = ({ centers }) => {
               )}
             </div>
 
-            {/* Text Content */}
             <div className="p-4 flex flex-col justify-between md:w-2/3">
               <h2 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
                 {center.name}
