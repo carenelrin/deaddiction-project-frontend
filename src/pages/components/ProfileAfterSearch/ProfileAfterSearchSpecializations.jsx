@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Import useParams to access the URL parameters
+import React from "react";
 import {
   FaWineGlassAlt,
   FaPills,
@@ -9,12 +8,7 @@ import {
   FaSadTear,
 } from "react-icons/fa";
 
-const ProfileAfterSearchSpecializations = () => {
-  const { centerId } = useParams();  // Access the centerId from the URL
-  const [specializations, setSpecializations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
+const ProfileAfterSearchSpecializations = ({ specializations }) => {
   // Define icons and descriptions for the specializations
   const specializationData = {
     "Alcohol Addiction": {
@@ -42,43 +36,6 @@ const ProfileAfterSearchSpecializations = () => {
       description: "Personalized care to combat depression and restore well-being.",
     },
   };
-
-  // Fetch data from the API
-  useEffect(() => {
-    const fetchSpecializations = async () => {
-      try {
-        if (!centerId) {
-          setError("Center ID is missing");
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch(
-          `https://deaddiction-project-backend.onrender.com/api/search/${centerId}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        // Assuming the API returns the specializations as an array
-        setSpecializations(data.specialization || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSpecializations();
-  }, [centerId]);  // Fetch data when centerId changes
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   return (
     <div className="bg-gradient-to-br from-sky-100 to-white p-10 max-w-8xl mx-auto border-2 border-sky-200 mt-[50px] mb-[50px]">

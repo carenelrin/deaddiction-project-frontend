@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import {
   FaMapMarkerAlt,
   FaCity,
@@ -8,54 +7,20 @@ import {
   FaBuilding,
   FaEnvelope,
 } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const ProfileAfterSearchCard = () => {
-  const [hospitalData, setHospitalData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const ProfileAfterSearchCard = ({ hospitalData }) => {
   const navigate = useNavigate();
-  const { centerId } = useParams(); // Get centerId from the route
-
-  useEffect(() => {
-    const fetchHospitalData = async () => {
-      try {
-        const response = await axios.get(
-          `https://deaddiction-project-backend.onrender.com/api/search/${centerId}`
-        );
-        console.log("Hospital Data: ", response.data); // Check the response structure
-        setHospitalData(response.data);
-      } catch (error) {
-        setError("Error fetching hospital data");
-        console.error("Error fetching hospital data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (centerId) {
-      fetchHospitalData();
-    }
-  }, [centerId]);
-
-  const handleNavigation = (path) => {
-    navigate(path);
-  };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   if (!hospitalData) {
     return <div>No hospital data available</div>;
   }
 
-  // Check the image field in the response
   const hospitalImage = hospitalData.profilePhotoURL || "/default-image.jpg"; // Default if no image is available
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
 
   return (
     <div className="flex flex-col md:flex-row items-center bg-gradient-to-br from-sky-100 to-white p-10 rounded-1xl max-w-8xl mx-auto mt-[90px] space-y-6 md:space-y-0 md:space-x-16 border border-sky-300 shadow-lg">
