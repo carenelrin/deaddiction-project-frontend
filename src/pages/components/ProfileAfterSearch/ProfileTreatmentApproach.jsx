@@ -1,48 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";  // Import useParams to access URL parameters
+import React from "react";
 
-const ProfileTreatmentApproach = () => {
-  const { centerId } = useParams();  // Access the centerId from the URL
-  const [approaches, setApproaches] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Fetch treatment approaches from the API
-  useEffect(() => {
-    const fetchApproaches = async () => {
-      try {
-        if (!centerId) {
-          setError("Center ID is missing");
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch(
-          `https://deaddiction-project-backend.onrender.com/api/search/${centerId}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        // Assuming the API returns a 'treatmentApproaches' field that is an array of strings
-        setApproaches(data.treatmentApproaches || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchApproaches();
-  }, [centerId]);  // Fetch data whenever centerId changes
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+const ProfileTreatmentApproach = ({ hospitalData }) => {
+  const approaches = hospitalData?.treatmentApproaches || [];  // Access treatmentApproaches from the data
 
   return (
     <div className="bg-white p-8 mx-auto mt-[50px] mb-[50px] border border-sky-300">
@@ -62,10 +21,10 @@ const ProfileTreatmentApproach = () => {
             >
               <div className="flex-1">
                 <h3 className="text-xl font-semibold text-sky-700">
-                  {approach} {/* Treating the string as the title */}
+                  {approach} 
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  This approach focuses on general treatment. {/* Optional default description */}
+                  This approach focuses on general treatment. 
                 </p>
               </div>
             </li>
