@@ -1,14 +1,29 @@
 import React from "react";
+import {
+  FaWineGlassAlt,
+  FaPills,
+  FaBrain,
+  FaHeart,
+  FaSmile,
+  FaSadTear,
+} from "react-icons/fa";
 
 const ProfileSpecializations = ({ profileData }) => {
-  // // Add a console log to check the data structure
-  // console.log("Profile Data: ", profileData);
-
   if (!profileData || !Array.isArray(profileData.specialization)) {
     return <div>Loading specializations...</div>;
   }
 
   const specializations = profileData.specialization;
+
+  // Mapping specializations to icons
+  const specializationIcons = {
+    "Alcohol Addiction": <FaWineGlassAlt className="text-sky-500 text-6xl mb-4" />,
+    "Substance Abuse": <FaPills className="text-sky-500 text-6xl mb-4" />,
+    "Mental Health": <FaBrain className="text-sky-500 text-6xl mb-4" />,
+    "Heart Health": <FaHeart className="text-sky-500 text-6xl mb-4" />,
+    "Positive Mentality": <FaSmile className="text-sky-500 text-6xl mb-4" />,
+    "Trauma Recovery": <FaSadTear className="text-sky-500 text-6xl mb-4" />,
+  };
 
   return (
     <div className="bg-gradient-to-br from-sky-100 to-white p-10 max-w-8xl mx-auto border-2 border-sky-200 mt-[50px] mb-[50px]">
@@ -22,18 +37,22 @@ const ProfileSpecializations = ({ profileData }) => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {specializations.map((spec, index) => (
-          <div
-            key={index}
-            className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out flex flex-col items-center text-center border-2 border-sky-200"
-          >
-            <div className="text-sky-500 text-6xl mb-4"></div>
-            <h3 className="text-xl font-semibold text-sky-700 mb-2">
-              {spec}
-            </h3>
-            <p className="text-base text-gray-600">Specialization in {spec}</p>
-          </div>
-        ))}
+        {specializations.map((spec, index) => {
+          console.log("Spec: ", spec); 
+          return (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out flex flex-col items-center text-center border-2 border-sky-200"
+            >
+              {/* Use the mapped icon or fallback to a default icon */}
+              {specializationIcons[spec] || <FaBrain className="text-sky-500 text-6xl mb-4" />}
+              <h3 className="text-xl font-semibold text-sky-700 mb-2">
+                {spec}
+              </h3>
+              <p className="text-base text-gray-600">Specialization in {spec}</p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -62,7 +62,7 @@ const ProfilePage = () => {
       <ProfileDescription profileData={profileData} />
       <ProfileSpecializations profileData={profileData} />
       <ProfileProgram profileData={profileData} />
-      <ProfileApproach approaches={profileData.treatmentApproaches || []} /> {/* Pass treatmentApproaches data */}
+      <ProfileApproach approaches={profileData.treatmentApproaches || []} /> 
       <Footer />
     </>
   );
