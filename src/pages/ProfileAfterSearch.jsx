@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Import useParams to access the URL parameters
+import { useParams } from "react-router-dom"; 
 import Navbar from "../components/Navbar";
 import ProfileAfterSearchCard from "./components/ProfileAfterSearch/ProfileAfterSearchCard";
 import ProfileAfterSearchDescription from "./components/ProfileAfterSearch/ProfileAfterSearchDescription";
 import ProfileAfterSearchProgram from "./components/ProfileAfterSearch/ProfileAfterSearchProgram";
 import ProfileTreatmentApproach from "./components/ProfileAfterSearch/ProfileTreatmentApproach";
 import Footer from "../components/Footer";
-import ProfileFeedback from "./components/ProfileAfterSearch/ProfileFeedback";
+import ProfileFeedback from "./components/ProfileAfterSearch/ProfileFeedback";  // Import ProfileFeedback here
 import ProfileAfterSearchSpecializations from "./components/ProfileAfterSearch/ProfileAfterSearchSpecializations";
 
 const ProfilePage = () => {
-  const { centerId } = useParams(); // Access the centerId from the URL
+  const { centerId } = useParams(); 
   const [hospitalData, setHospitalData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,7 +40,7 @@ const ProfilePage = () => {
     };
 
     fetchHospitalData();
-  }, [centerId]); // Fetch data when centerId changes
+  }, [centerId]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -58,7 +58,7 @@ const ProfilePage = () => {
       <ProfileAfterSearchSpecializations specializations={hospitalData.specialization || []} />
       <ProfileAfterSearchProgram hospitalData={hospitalData} />
       <ProfileTreatmentApproach hospitalData={hospitalData} />
-      <ProfileFeedback hospitalData={hospitalData} />
+      <ProfileFeedback centerId={centerId} />  {/* Pass centerId to ProfileFeedback */}
       <Footer />
     </>
   );

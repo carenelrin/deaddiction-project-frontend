@@ -74,18 +74,18 @@ const ProfileAfterSearchCard = ({ hospitalData }) => {
           </p>
         </div>
         <div className="mt-10 flex space-x-6">
-          <button
+          {/* <button
             className="bg-sky-500 text-white px-8 py-3 text-lg rounded-full shadow-md hover:bg-sky-600 hover:scale-105 transition"
             onClick={() => handleNavigation("/eventrecord")}
           >
             Event Data
-          </button>
-          <button
+          </button> */}
+          {/* <button
             className="bg-sky-500 text-white px-8 py-3 text-lg rounded-full shadow-md hover:bg-sky-600 hover:scale-105 transition"
             onClick={() => handleNavigation("/patientrecord")}
           >
             Patient Data
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

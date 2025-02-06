@@ -49,8 +49,10 @@ const LandingpageServices = () => {
   return (
     <>
       <section className="bg-blue-50 py-16">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Our Services</h2>
+        <div className="container mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold mb-4 text-[#458FF6]">
+            Our Services
+          </h2>
           <p className="text-lg text-gray-600 mb-12">
             We provide you the best choices for your health needs. Consult with
             our highly qualified doctors.
@@ -60,14 +62,14 @@ const LandingpageServices = () => {
             {servicesData.map((service, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex flex-col items-center transition-transform transform hover:scale-105 w-full sm:w-72 mx-auto"
+                className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center transition-transform transform hover:scale-105 w-full sm:w-72 mx-auto"
               >
                 <img
                   src={service.image}
                   alt={service.title}
-                  className="w-10 h-10 mb-4 object-cover"
+                  className="w-14 h-14 mb-4 object-cover"
                 />
-                <h3 className="text-lg sm:text-xl font-semibold mb-2 text-center">
+                <h3 className="text-lg sm:text-xl font-semibold mb-2 text-center text-[#458FF6]">
                   {service.title}
                 </h3>
                 <p className="text-gray-600 text-center text-sm sm:text-base">

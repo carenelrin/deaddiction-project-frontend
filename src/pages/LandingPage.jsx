@@ -6,6 +6,7 @@ import LandingpageServices from "./components/LandingPage/LandingpageServices";
 import LandingpageHealthcare from "./components/LandingPage/LandingpageHealthcare";
 import LandingpageFooter from "../components/Footer";
 import LandingPageFAQSection from "./components/LandingPage/LandingPageFAQSection";
+import ChatWithAl from "../pages/ChatWithAI"
 const LandingPage = () => {
   return (
     <>
@@ -14,6 +15,7 @@ const LandingPage = () => {
       <LandingpageServices />
       <LandingpageHealthcare />
       <LandingpageTreatmentCenters />
+      <ChatWithAl/>
       <LandingPageFAQSection />
       <LandingpageFooter />
     </>
