@@ -12,7 +12,7 @@ const LandingpageFooter = () => {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between">
           <div className="mb-6 md:mb-0">
-            <h2 className="text-xl font-bold mb-2">Company Name</h2>
+            <h2 className="text-xl font-bold mb-2">Deaddiction</h2>
             <p className="text-black">
               We are committed to providing the best healthcare solutions. Our
               focus is on quality, accessibility, and affordability.

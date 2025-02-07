@@ -1,90 +1,98 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
-const ProfileFeedback = ({ centreId }) => {
+const ProfileFeedback = ({ centerId }) => {
   const [feedbacks, setFeedbacks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showAllFeedback, setShowAllFeedback] = useState(false);
-  const [name, setName] = useState(""); // State for name
-  const [feedback, setFeedback] = useState(""); // State for feedback
-  const [submitting, setSubmitting] = useState(false); // State for form submission loading
+  const [name, setName] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  // Fetch feedback data when the centreId changes
   useEffect(() => {
-    if (!centreId) return;
+    if (!centerId) return;
 
     const fetchFeedbacks = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        setLoading(true);
-        const response = await axios.get(
-          `https://deaddiction-project-backend.onrender.com/api/centre/${centreId}/feedback`
+        const response = await fetch(
+          `https://deaddiction-project-backend.onrender.com/api/search/${centerId}`
         );
-        setFeedbacks(response.data.feedbacks);
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setFeedbacks(data.feedbacks || []); // Corrected to extract 'feedbacks' array
       } catch (err) {
-        setError("Failed to fetch feedbacks");
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
     fetchFeedbacks();
-  }, [centreId]);
+  }, [centerId]);
 
-  // Handle feedback form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !feedback) return;
+    setError(null);
+
+    if (!name.trim() || !feedback.trim()) {
+      setError("Both name and feedback are required!");
+      return;
+    }
+
+    setSubmitting(true);
+
+    const newFeedback = {
+      name,
+      feedback,
+      date: new Date().toISOString(),
+    };
 
     try {
-      setSubmitting(true);
-      const newFeedback = { name, feedback };
-
-      // Send POST request to submit feedback
-      const response = await axios.post(
-        `https://deaddiction-project-backend.onrender.com/api/centre/${centreId}/feedback`,
-        newFeedback
+      const response = await fetch(
+        `https://deaddiction-project-backend.onrender.com/api/centre/${centerId}/feedback`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newFeedback),
+        }
       );
 
-      // Update the state with the new feedback
-      setFeedbacks((prev) => [response.data.feedback, ...prev]);
+      if (!response.ok) {
+        throw new Error(`Submission failed: ${response.statusText}`);
+      }
 
-      // Clear the form fields
+      setFeedbacks((prev) => [newFeedback, ...prev]);
       setName("");
       setFeedback("");
     } catch (err) {
-      setError("Failed to submit feedback");
+      setError(err.message);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const toggleShowMore = () => {
-    setShowAllFeedback((prev) => !prev);
-  };
-
-  const displayedFeedbacks = showAllFeedback
-    ? feedbacks
-    : feedbacks.slice(0, 2);
+  const displayedFeedbacks = showAllFeedback ? feedbacks : feedbacks.slice(0, 2);
 
   return (
     <div className="flex flex-col md:flex-row items-start justify-center gap-8 bg-[#f4f7fc] p-8 rounded-lg shadow-lg">
       {/* Feedback Form */}
       <div className="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-3xl font-semibold text-sky-700">Center Feedback</h2>
+        {error && <p className="text-red-500 text-lg mb-2">{error}</p>}
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label
-              htmlFor="name"
-              className="block text-lg font-semibold text-gray-700 mb-1"
-            >
-              Name
-            </label>
+            <label className="block text-lg font-semibold text-gray-700 mb-1">Name</label>
             <input
               type="text"
-              id="name"
-              name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#458FF6]"
@@ -93,15 +101,8 @@ const ProfileFeedback = ({ centreId }) => {
             />
           </div>
           <div>
-            <label
-              htmlFor="feedback"
-              className="block text-lg font-semibold text-gray-700 mb-1"
-            >
-              Feedback
-            </label>
+            <label className="block text-lg font-semibold text-gray-700 mb-1">Feedback</label>
             <textarea
-              id="feedback"
-              name="feedback"
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#458FF6] h-32"
@@ -123,9 +124,7 @@ const ProfileFeedback = ({ centreId }) => {
 
       {/* Feedback Display */}
       <div className="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-3xl font-semibold text-sky-700 mb-4">
-          User Feedback
-        </h2>
+        <h2 className="text-3xl font-semibold text-sky-700 mb-4">User Feedback</h2>
         {loading ? (
           <p className="text-gray-500 text-lg">Loading feedback...</p>
         ) : error ? (
@@ -146,7 +145,8 @@ const ProfileFeedback = ({ centreId }) => {
                   <span className="font-semibold">Feedback:</span> {fb.feedback}
                 </p>
                 <p className="text-gray-500 text-sm">
-                  <span className="font-semibold">Date:</span> {fb.date}
+                  <span className="font-semibold">Date:</span>{" "}
+                  {new Date(fb.date).toLocaleDateString()}
                 </p>
               </li>
             ))}
@@ -154,8 +154,8 @@ const ProfileFeedback = ({ centreId }) => {
         )}
         {feedbacks.length > 2 && (
           <div
-            className="flex items-center justify-center mt-4 cursor-pointer text-[#458FF6] hover:text-[#367bd7] transition duration-300"
-            onClick={toggleShowMore}
+            className="flex items-center justify-center mt-4 cursor-pointer text-[#458FF6] hover:text-[#367bd7]"
+            onClick={() => setShowAllFeedback((prev) => !prev)}
           >
             <span className="text-lg font-semibold">
               {showAllFeedback ? "Show Less" : "See More"}

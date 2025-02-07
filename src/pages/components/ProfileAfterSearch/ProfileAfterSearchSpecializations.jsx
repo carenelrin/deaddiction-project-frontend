@@ -9,7 +9,6 @@ import {
 } from "react-icons/fa";
 
 const ProfileAfterSearchSpecializations = ({ specializations }) => {
-  // Define icons and descriptions for the specializations
   const specializationData = {
     "Alcohol Addiction": {
       icon: <FaWineGlassAlt />,
