@@ -29,7 +29,7 @@ const AppRoutes = () => {
         <Route path="/profilepage" element={<ProfilePage />} />
         <Route path="/searchprofilepage" element={<Searchprofilepage />} />
         <Route path="/searchprofilepage/:centerId" element={<Searchprofilepage />} />
-        {/* <Route path="/chat" element={<ChatWithAI />} /> */}
+        <Route path="/chat" element={<ChatWithAI />} />
       </Routes>
     </Router>
   );

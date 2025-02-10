@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const Chatbot = () => {
-  const [messages, setMessages] = useState([]);
-  const [prompt, setPrompt] = useState("");
+  const [messages, setMessages] = useState([]); // Chat history
+  const [prompt, setPrompt] = useState(""); // User input
 
   const handleSend = async () => {
     if (!prompt.trim()) return;
@@ -12,7 +12,7 @@ const Chatbot = () => {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await axios.post("https://deaddiction-project-backend.onrender.com/api/chat/", {
+      const response = await axios.post("http://localhost:4000/api/chat", {
         prompt,
       });
       const botMessage = { sender: "bot", text: response.data.response };
@@ -30,61 +30,51 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between">
-      <div className="mb-8 mt-8 flex flex-col md:flex-row h-full">
-        <div className="w-full md:w-1/2 bg-gradient-to-r from-blue-400 to-blue-400 p-8 flex items-center justify-center">
-          <h2 className="text-white text-2xl md:text-3xl font-semibold text-center">
-            Hi there! I'm DeAddiction, your personal chatbot. Feel free to ask me anything!
-          </h2>
-        </div>
+    <div className="flex flex-col min-h-screen">
 
-        <div className="w-full md:w-1/2 flex flex-col bg-gray-100 p-4 border-l border-gray-300">
-          <header className="bg-blue-400 text-white text-center py-4 font-bold text-lg border-b border-blue-400">
-            Chatbot
-          </header>
+      <div className="w-full bg-gradient-to-r from-blue-500 to-blue-400 p-8 flex items-center justify-center">
+        <h2 className="text-white text-3xl font-semibold">Welcome to Chatbot</h2>
+      </div>
 
-          <div
-            className="flex-1 p-4 overflow-y-auto"
-            style={{
-              maxHeight: "400px",
-              overflowY: messages.length > 6 ? "auto" : "initial",
-            }}
-          >
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  msg.sender === "user" ? "justify-end" : "justify-start"
-                } mb-2`}
-              >
-                <div
-                  className={`px-4 py-2 rounded-lg ${
-                    msg.sender === "user"
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-300 text-black"
-                  }`}
-                >
-                  {msg.text}
-                </div>
-              </div>
-            ))}
-          </div>
+      <div className="flex-1 flex flex-col bg-gray-100 p-4 border-t border-gray-300">
 
-          <div className="bg-white p-4 flex items-center gap-2 border-t border-gray-300">
-            <input
-              type="text"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Type your message..."
-              className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-            />
-            <button
-              onClick={handleSend}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+        <header className="bg-blue-400 text-white text-center py-4 font-bold text-xl rounded-lg mb-4 shadow-lg">
+          Chatbot
+        </header>
+        <div className="flex-1 p-4 overflow-y-auto space-y-4">
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`flex ${
+                msg.sender === "user" ? "justify-end" : "justify-start"
+              }`}
             >
-              Send
-            </button>
-          </div>
+              <div
+                className={`px-6 py-3 max-w-md rounded-xl shadow-lg ${
+                  msg.sender === "user"
+                    ? "bg-blue-400 text-white rounded-br-none"
+                    : "bg-gray-200 text-black rounded-bl-none"
+                }`}
+              >
+                {msg.text}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="bg-white p-4 flex items-center gap-2 border-t border-gray-300 shadow-md rounded-lg">
+          <input
+            type="text"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Type your message..."
+            className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={handleSend}
+            className="bg-blue-400 text-white px-6 py-3 rounded-lg hover:bg-blue-400 transition duration-200"
+          >
+            Send
+          </button>
         </div>
       </div>
     </div>
