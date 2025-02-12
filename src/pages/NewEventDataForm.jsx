@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const NewEventDataForm = () => {
   const [formData, setFormData] = useState({
     title: "",
     date: "",
-    description: "",
+    details: "",
   });
+  const token = localStorage.getItem("jwtToken");
 
   const [errors, setErrors] = useState({});
 
@@ -18,7 +20,7 @@ const NewEventDataForm = () => {
       case "date":
         if (!value) error = "Event date is required.";
         break;
-      case "description":
+      case "details":
         if (!value.trim()) error = "Event description is required.";
         break;
       default:
@@ -33,8 +35,9 @@ const NewEventDataForm = () => {
     setErrors({ ...errors, [name]: validateField(name, value) });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
       const error = validateField(key, formData[key]);
@@ -43,8 +46,33 @@ const NewEventDataForm = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      console.log("Form submitted:", formData);
-      // Add your form submission logic here
+      try {
+        const response = await axios.post(
+          "https://deaddiction-project-backend.onrender.com/api/centre/events",
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        alert("Event created successfully!");
+        setFormData({
+          title: "",
+          date: "",
+          details: "",
+        });
+      } catch (error) {
+        console.error(
+          "Error creating event:",
+          error.response?.data || error.message
+        );
+        alert(
+          error.response?.data?.message ||
+            "Failed to create event. Please try again."
+        );
+      }
     }
   };
 
@@ -59,7 +87,6 @@ const NewEventDataForm = () => {
           New Event Data Form
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Event Title */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">
               Event Title*
@@ -78,8 +105,6 @@ const NewEventDataForm = () => {
               <p className="text-red-500 text-sm mt-1">{errors.title}</p>
             )}
           </div>
-
-          {/* Event Date */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">
               Event Date*
@@ -97,27 +122,23 @@ const NewEventDataForm = () => {
               <p className="text-red-500 text-sm mt-1">{errors.date}</p>
             )}
           </div>
-
-          {/* Event Description */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">
               Event Description*
             </label>
             <textarea
-              name="description"
-              value={formData.description}
+              name="details"
+              value={formData.details}
               onChange={handleChange}
               placeholder="Enter event description"
               className={`w-full px-4 py-2 border ${
-                errors.description ? "border-red-500" : "border-gray-300"
+                errors.details ? "border-red-500" : "border-gray-300"
               } rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none`}
             ></textarea>
-            {errors.description && (
-              <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+            {errors.details && (
+              <p className="text-red-500 text-sm mt-1">{errors.details}</p>
             )}
           </div>
-
-          {/* Action Buttons */}
           <div className="flex items-center justify-end space-x-4">
             <button
               type="button"

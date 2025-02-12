@@ -36,44 +36,38 @@ const FAQSection = () => {
   };
 
   return (
-    <>
-      <section className="bg-gray-50 py-8 md:py-16">
-        <div className="container mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-[#458FF6]">
-            Frequently Asked Questions
-          </h2>
-          <div className="flex flex-col items-center">
-            {faqs.map((faq, index) => (
+    <section className="bg-gray-50 py-8 md:py-16">
+      <div className="container mx-auto text-center px-4">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-[#458FF6]">
+          Frequently Asked Questions
+        </h2>
+        <div className="flex flex-col items-center">
+          {faqs.map((faq, index) => (
+            <div
+              key={index}
+              className="w-full max-w-[90%] md:max-w-[1100px] mb-4 bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 transform hover:scale-105"
+            >
               <div
-                key={index}
-                className="w-full max-w-[90%] md:max-w-[1100px] mb-4 bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 transform hover:scale-105"
+                className="flex justify-between items-center p-4 md:p-5 cursor-pointer hover:bg-blue-50 transition duration-200"
+                onClick={() => toggleFAQ(index)}
               >
-                <div
-                  className="flex justify-between items-center p-4 md:p-5 cursor-pointer hover:bg-blue-50 transition duration-200"
-                  onClick={() => toggleFAQ(index)}
-                >
-                  <h3 className="text-base md:text-lg font-semibold text-gray-800">
-                    {faq.question}
-                  </h3>
-                  <span className="text-xl text-gray-600">
-                    {activeIndex === index ? (
-                      <AiOutlineMinus />
-                    ) : (
-                      <AiOutlinePlus />
-                    )}
-                  </span>
-                </div>
-                {activeIndex === index && (
-                  <div className="p-4 md:p-5 text-gray-700 bg-gray-100">
-                    <p>{faq.answer}</p>
-                  </div>
-                )}
+                <h3 className="text-base md:text-lg font-semibold text-gray-800">
+                  {faq.question}
+                </h3>
+                <span className="text-xl text-gray-600">
+                  {activeIndex === index ? <AiOutlineMinus /> : <AiOutlinePlus />}
+                </span>
               </div>
-            ))}
-          </div>
+              {activeIndex === index && (
+                <div className="p-4 md:p-5 text-gray-700 bg-gray-100">
+                  <p>{faq.answer}</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

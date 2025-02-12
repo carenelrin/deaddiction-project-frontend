@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
-import { LoginButton, SignUpButton } from "./Buttons";
+import { LoginButton, SignUpButton, SearchButton } from "./Buttons";
 
 const LandingpageNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [navbarBg, setNavbarBg] = useState("bg-white");
   const location = useLocation();
+  const navigate = useNavigate();
+  const isLoggedIn = Boolean(localStorage.getItem("jwtToken"));
 
   const isRootRoute = location.pathname === "/";
   const isSearchRoute = location.pathname === "/search";
   const isProfilePage = location.pathname === "/profilepage";
+  const isProfilePageWithId = location.pathname.startsWith("/profilepage/");
 
   const handleScroll = () => {
     if (window.scrollY > 50 || isSearchRoute) {
@@ -21,7 +24,9 @@ const LandingpageNavbar = () => {
   };
 
   useEffect(() => {
-    if (isProfilePage) {
+    if (isProfilePageWithId) {
+      setNavbarBg("bg-blue-100");
+    } else if (isProfilePage) {
       setNavbarBg("bg-blue-100");
     } else {
       window.addEventListener("scroll", handleScroll);
@@ -29,13 +34,18 @@ const LandingpageNavbar = () => {
         window.removeEventListener("scroll", handleScroll);
       };
     }
-  }, [isSearchRoute, isProfilePage, location.pathname]);
+  }, [isSearchRoute, isProfilePage, isProfilePageWithId, location.pathname]);
+
+  const handleLogout = (navigate) => {
+    localStorage.removeItem("jwtToken");
+    navigate("/");
+  };
 
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 ${navbarBg} text-blue-700 transition-colors duration-300`}
     >
-      <div className="container mx-auto flex justify-between items-center py-4 px-6">
+      <div className="container mx-auto flex justify-between items-center py-4 px-6 md:px-8 lg:px-10">
         <Link
           to="/"
           className="flex items-center space-x-3 cursor-pointer"
@@ -44,7 +54,9 @@ const LandingpageNavbar = () => {
           <div className="bg-[#458FF6] text-white font-bold text-xl flex justify-center items-center w-12 h-12 rounded-full">
             D
           </div>
-          <h1 className="text-3xl font-semibold text-sky-700">DeAddiction</h1>
+          <h1 className="text-2xl md:text-3xl font-semibold text-sky-700">
+            DeAddict
+          </h1>
         </Link>
 
         <div className="md:hidden">
@@ -54,13 +66,29 @@ const LandingpageNavbar = () => {
         </div>
 
         <div className="hidden md:flex space-x-6">
-          {isRootRoute ? (
+          {isSearchRoute ? (
             <>
-              <LoginButton />
-              <SignUpButton />
+              {!isLoggedIn ? (
+                <>
+                  <LoginButton />
+                  <SignUpButton />
+                </>
+              ) : (
+                <LogoutButton onLogout={() => handleLogout(navigate)} />
+              )}
             </>
           ) : (
-            <LogoutButton />
+            <>
+              {!isLoggedIn ? (
+                <>
+                  <LoginButton />
+                  <SignUpButton />
+                  <SearchButton />
+                </>
+              ) : (
+                <LogoutButton onLogout={() => handleLogout(navigate)} />
+              )}
+            </>
           )}
         </div>
       </div>
@@ -68,13 +96,29 @@ const LandingpageNavbar = () => {
       {isMenuOpen && (
         <div className="md:hidden mt-4 bg-white rounded-lg shadow-lg">
           <nav className="flex flex-col space-y-4 p-4">
-            {isRootRoute ? (
+            {isSearchRoute ? (
               <>
-                <LoginButton />
-                <SignUpButton />
+                {!isLoggedIn ? (
+                  <>
+                    <LoginButton />
+                    <SignUpButton />
+                  </>
+                ) : (
+                  <LogoutButton onLogout={() => handleLogout(navigate)} />
+                )}
               </>
             ) : (
-              <LogoutButton />
+              <>
+                {!isLoggedIn ? (
+                  <>
+                    <LoginButton />
+                    <SignUpButton />
+                    <SearchButton />
+                  </>
+                ) : (
+                  <LogoutButton onLogout={() => handleLogout(navigate)} />
+                )}
+              </>
             )}
           </nav>
         </div>
@@ -83,8 +127,11 @@ const LandingpageNavbar = () => {
   );
 };
 
-const LogoutButton = () => (
-  <button className="bg-[#458FF6] text-white py-2 px-4 rounded hover:bg-[#458FF6]-600 transition">
+const LogoutButton = ({ onLogout }) => (
+  <button
+    className="bg-[#458FF6] text-white py-2 px-4 rounded hover:bg-[#458FF6]-600 transition"
+    onClick={onLogout}
+  >
     Logout
   </button>
 );

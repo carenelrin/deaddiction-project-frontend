@@ -1,24 +1,22 @@
 import React from "react";
 
-const ProfileApproach = () => {
-  const approaches = [
-    {
-      title: "Best Rehabilitation Center",
-      description: "Recognized for outstanding recovery programs.",
-    },
-    {
-      title: "Excellence in Mental Health Care",
-      description: "Holistic treatment methods for mental health disorders.",
-    },
-    {
-      title: "Accredited by National Boards",
-      description: "Certified for quality healthcare services.",
-    },
-  ];
+const ProfileApproach = ({ approaches }) => {
+  if (!approaches || approaches.length === 0) {
+    return (
+      <div className="bg-white p-8 mx-auto mt-[50px] mb-[50px] border border-sky-300">
+        <div className="mb-8">
+          <h2 className="text-3xl font-semibold text-sky-700">Our Approach</h2>
+          <p className="text-lg text-gray-600 mt-4">
+            No treatment approaches available.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white p-8 mx-auto  mt-[50px] mb-[50px]   border border-sky-300">
-      <div className=" mb-8">
+    <div className="bg-white p-8 mx-auto mt-[50px] mb-[50px] border border-sky-300">
+      <div className="mb-8">
         <h2 className="text-3xl font-semibold text-sky-700">Our Approach</h2>
         <p className="text-lg text-gray-600 mt-4">
           Learn more about our approach to recovery and wellness.
@@ -33,9 +31,8 @@ const ProfileApproach = () => {
           >
             <div className="flex-1">
               <h3 className="text-xl font-semibold text-sky-700">
-                {approach.title}
+                {approach}
               </h3>
-              <p className="text-gray-600 text-sm">{approach.description}</p>
             </div>
           </li>
         ))}

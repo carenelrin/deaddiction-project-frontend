@@ -1,17 +1,8 @@
 import React from "react";
-import { FaPlusCircle } from "react-icons/fa";
 
-const ProfileProgram = () => {
-  const programs = [
-    {
-      title: "Alcohol Recovery",
-      description: "Comprehensive recovery support for alcohol addiction.",
-    },
-    {
-      title: "Mental Health Support",
-      description: "Holistic treatments for managing mental health disorders.",
-    },
-  ];
+const ProfileProgram = ({ profileData }) => {
+  // Directly using treatmentPrograms from the profileData if available
+  const programs = profileData?.treatmentPrograms || []; // If treatmentPrograms is missing, an empty array is used.
 
   return (
     <div className="bg-gradient-to-br from-sky-100 to-white p-8 mx-auto mt-[50px] border border-sky-300 ">
@@ -26,19 +17,24 @@ const ProfileProgram = () => {
       </div>
 
       <ul className="space-y-4">
-        {programs.map((program, index) => (
-          <li
-            key={index}
-            className="flex justify-between items-center p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-all"
-          >
-            <div className="flex flex-col space-y-2">
-              <h3 className="text-xl font-semibold text-sky-700">
-                {program.title}
-              </h3>
-              <p className="text-sm text-gray-500">{program.description}</p>
-            </div>
-          </li>
-        ))}
+        {programs.length > 0 ? (
+          programs.map((program, index) => (
+            <li
+              key={index}
+              className="flex justify-between items-center p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-all"
+            >
+              <div className="flex flex-col space-y-2">
+                <h3 className="text-xl font-semibold text-sky-700">
+                  {program}
+                </h3>
+                {/* Assuming the program is just a string, adjust if needed */}
+                <p className="text-sm text-gray-500">{program}</p>
+              </div>
+            </li>
+          ))
+        ) : (
+          <p className="text-center text-gray-500">No programs available.</p>
+        )}
       </ul>
     </div>
   );

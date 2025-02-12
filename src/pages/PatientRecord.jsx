@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -14,83 +14,75 @@ import {
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 
-const randomData = [
-  {
-    id: 1,
-    name: "John Doe",
-    gender: "Male",
-    age: 32,
-    mobile: "1234567890",
-    address: "123 Main St",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    gender: "Female",
-    age: 28,
-    mobile: "9876543210",
-    address: "456 Oak Ave",
-  },
-  {
-    id: 3,
-    name: "Robert Brown",
-    gender: "Male",
-    age: 45,
-    mobile: "4567891230",
-    address: "789 Pine Blvd",
-  },
-];
-
-const treatmentDetails = [
-  {
-    admissionDate: "2023-12-01",
-    problem: "Fractured Leg",
-    treatmentSummary: "Surgery performed successfully.",
-    progressSummary: "Healing as expected.",
-    dischargeDate: "2023-12-10",
-  },
-  {
-    admissionDate: "2023-11-15",
-    problem: "High Fever",
-    treatmentSummary: "Administered antibiotics.",
-    progressSummary: "Fully recovered.",
-    dischargeDate: "2023-11-20",
-  },
-  {
-    admissionDate: "2023-10-01",
-    problem: "Broken Arm",
-    treatmentSummary: "Cast applied.",
-    progressSummary: "Rehabilitation ongoing.",
-    dischargeDate: "2023-10-15",
-  },
-];
-
 const PatientRecord = () => {
-  const [patients, setPatients] = useState(randomData);
+  const [patients, setPatients] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedTreatment, setSelectedTreatment] = useState(null);
+  const token = localStorage.getItem("jwtToken");
 
-  const handleDetailClick = useCallback((index) => {
-    setSelectedTreatment(treatmentDetails[index]);
+  const fetchPatients = useCallback(async () => {
+    try {
+      const response = await fetch(
+        "https://deaddiction-project-backend.onrender.com/api/centre/patients",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.patients) {
+        setPatients(data.patients);
+      }
+    } catch (error) {
+      console.error("Error fetching patient data:", error);
+    }
+  }, [token]);
+
+  const handleDelete = useCallback(
+    async (id) => {
+      try {
+        const response = await fetch(
+          `https://deaddiction-project-backend.onrender.com/api/centre/patients/${id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.ok) {
+          setPatients((prevPatients) =>
+            prevPatients.filter((patient) => patient._id !== id)
+          );
+        } else {
+          console.error("Error deleting patient");
+        }
+      } catch (error) {
+        console.error("Error deleting patient:", error);
+      }
+    },
+    [token]
+  );
+
+  const handleDetailClick = useCallback((patient) => {
+    const treatmentDetails = {
+      admissionDate: patient.admissionDate,
+      problem: patient.problem,
+      treatmentSummary: patient.treatmentSummary,
+      progressSummary: patient.progressSummary,
+      dischargeDate: patient.dischargeDate,
+    };
+    setSelectedTreatment(treatmentDetails);
     setOpenModal(true);
   }, []);
 
-  const handleCloseModal = useCallback(() => {
-    setOpenModal(false);
-    setSelectedTreatment(null);
-  }, []);
-
-  const handleDelete = useCallback(
-    (id) => {
-      const updatedPatients = patients.filter((patient) => patient.id !== id);
-      setPatients(updatedPatients);
-    },
-    [patients]
-  );
-
-  const handleDownloadPDF = () => {
-    alert("Download PDF feature is not implemented yet.");
-  };
+  useEffect(() => {
+    if (token) {
+      fetchPatients();
+    }
+  }, [token, fetchPatients]);
 
   return (
     <Box sx={{ p: 4, bgcolor: "background.default", minHeight: "100vh" }}>
@@ -149,46 +141,54 @@ const PatientRecord = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {patients.map((row, index) => (
-              <TableRow
-                key={row.id}
-                sx={{
-                  bgcolor: index % 2 === 0 ? "#f9f9f9" : "#ffffff",
-                  "&:hover": { bgcolor: "#f1f5fb" },
-                }}
-              >
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.gender}</TableCell>
-                <TableCell>{row.age}</TableCell>
-                <TableCell>{row.mobile}</TableCell>
-                <TableCell>{row.address}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{ mr: 1 }}
-                    onClick={() => handleDetailClick(index)}
-                    startIcon={<Edit />}
-                  >
-                    Detail
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleDelete(row.id)}
-                    startIcon={<Delete />}
-                  >
-                    Delete
-                  </Button>
+            {patients.length > 0 ? (
+              patients.map((row, index) => (
+                <TableRow
+                  key={row._id}
+                  sx={{
+                    bgcolor: index % 2 === 0 ? "#f9f9f9" : "#ffffff",
+                    "&:hover": { bgcolor: "#f1f5fb" },
+                  }}
+                >
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.gender}</TableCell>
+                  <TableCell>{row.age}</TableCell>
+                  <TableCell>{row.mobileNumber}</TableCell>
+                  <TableCell>{row.address}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      sx={{ mr: 1 }}
+                      onClick={() => handleDetailClick(row)}
+                      startIcon={<Edit />}
+                    >
+                      Detail
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleDelete(row._id)}
+                      startIcon={<Delete />}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  No patients found.
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
 
       {selectedTreatment && (
-        <Modal open={openModal} onClose={handleCloseModal}>
+        <Modal open={openModal} onClose={() => setOpenModal(false)}>
           <Box
             sx={{
               position: "absolute",
@@ -222,25 +222,31 @@ const PatientRecord = () => {
                 mb: 2,
               }}
             >
-              {Object.entries(selectedTreatment).map(([key, value]) => (
-                <Typography key={key} sx={{ mb: 1 }}>
-                  <strong>{key.replace(/([A-Z])/g, " $1")}:</strong> {value}
-                </Typography>
-              ))}
+              <Typography sx={{ mb: 1 }}>
+                <strong>Admission Date:</strong>{" "}
+                {selectedTreatment.admissionDate}
+              </Typography>
+              <Typography sx={{ mb: 1 }}>
+                <strong>Problem:</strong> {selectedTreatment.problem}
+              </Typography>
+              <Typography sx={{ mb: 1 }}>
+                <strong>Treatment Summary:</strong>{" "}
+                {selectedTreatment.treatmentSummary}
+              </Typography>
+              <Typography sx={{ mb: 1 }}>
+                <strong>Progress Summary:</strong>{" "}
+                {selectedTreatment.progressSummary}
+              </Typography>
+              <Typography sx={{ mb: 1 }}>
+                <strong>Discharge Date:</strong>{" "}
+                {selectedTreatment.dischargeDate}
+              </Typography>
             </Box>
             <Box sx={{ textAlign: "center" }}>
               <Button
-                variant="contained"
-                color="primary"
-                onClick={handleDownloadPDF}
-                sx={{ mr: 2 }}
-              >
-                Download PDF
-              </Button>
-              <Button
                 variant="outlined"
                 color="secondary"
-                onClick={handleCloseModal}
+                onClick={() => setOpenModal(false)}
               >
                 Close
               </Button>
