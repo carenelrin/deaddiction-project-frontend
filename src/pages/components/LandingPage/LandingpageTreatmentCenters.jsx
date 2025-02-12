@@ -11,25 +11,21 @@ const TreatmentCenters = () => {
       location: "India",
       description:
         "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat, ducimus.",
-      
     },
     {
       img: emgCard4,
       location: "Location 2",
       description: "Description for location 2.",
-      
     },
     {
       img: trackingCard5,
       location: "Location 3",
       description: "Description for location 3.",
-      
     },
     {
       img: trackingCard6,
       location: "Location 4",
       description: "Description for location 4.",
-      
     },
   ];
 
@@ -52,13 +48,13 @@ const TreatmentCenters = () => {
             Our Treatment Centres
           </h1>
           <p className="text-base md:text-lg text-gray-700">
-            UKAT is renowned for its exceptional addiction treatment centres,
-            offering luxury private rehab facilities in tranquil settings by the
-            seaside, rural countryside, or peaceful villages. Each location is
-            meticulously selected to create an ideal environment supporting
-            recovery. Our commitment to delivering outstanding care and
-            rehabilitation is unwavering, with a strong focus on achieving
-            long-term recovery.
+            DeAddict is renowned for its exceptional addiction treatment
+            centres, offering luxury private rehab facilities in tranquil
+            settings by the seaside, rural countryside, or peaceful villages.
+            Each location is meticulously selected to create an ideal
+            environment supporting recovery. Our commitment to delivering
+            outstanding care and rehabilitation is unwavering, with a strong
+            focus on achieving long-term recovery.
           </p>
         </div>
 

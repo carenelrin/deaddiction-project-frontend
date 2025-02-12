@@ -7,7 +7,7 @@ const LandingpageIntroSection = () => {
       {/* Text Section */}
       <div className="md:w-1/2 mb-8 md:mb-0 ml-12 flex flex-col items-start">
         <h2 className="text-3xl md:text-4xl font-bold text-[#458FF6] mb-2">
-          Virtual Healthcare
+          Deaddiction and Counselling Healthcare
         </h2>
         <h3 className="text-xl md:text-2xl font-semibold text-gray-600 mb-4">
           For You

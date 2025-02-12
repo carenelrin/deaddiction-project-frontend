@@ -9,38 +9,35 @@ import LandingpageIntroSection from "./LandingpageIntroSection";
 
 const servicesData = [
   {
-    title: "Search Doctor",
+    title: "Search Center",
     description:
-      "Choose your doctor from thousands of specialists, general practitioners, and trusted hospitals.",
+      "Choose your Center from the pool of centers available on our platform",
     image: searchCardImage,
   },
   {
-    title: "Online Pharmacy",
-    description:
-      "Buy your medicines with our mobile application with a simple delivery system.",
+    title: "Online Source",
+    description: "Get and store your data onlilne for ease of accessibility.",
     image: onlinePharmacyImage,
   },
   {
-    title: "Consultation",
-    description:
-      "Free consultation with our trusted doctors and get the best recommendations.",
+    title: "Profile Info",
+    description: "Extensive profile setup and presentation on centers.",
     image: consultationImage,
   },
   {
-    title: "Emergency Care",
+    title: "Relaible",
     description:
-      "You can get 24/7 urgent care for yourself or your children and your lovely family.",
+      "You can get 24/7 urgent data for yourself or your children and your lovely family.",
     image: emergencyCareImage,
   },
   {
-    title: "Tracking",
-    description: "Track and save your medical history and health data.",
+    title: "Data Management",
+    description: "Effecient management of data using effecient interfaces.",
     image: trackingImage,
   },
   {
     title: "Detail Information",
-    description:
-      "Consult with us to understand which type of service is suitable for your health.",
+    description: "We provide detailed infromation related to centers.",
     image: detailInfoImage,
   },
 ];
