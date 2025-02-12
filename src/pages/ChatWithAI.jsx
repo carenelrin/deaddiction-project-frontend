@@ -12,9 +12,12 @@ const Chatbot = () => {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await axios.post("http://localhost:4000/api/chat", {
-        prompt,
-      });
+      const response = await axios.post(
+        "https://deaddiction-project-backend.onrender.com/api/chat/",
+        {
+          prompt,
+        }
+      );
       const botMessage = { sender: "bot", text: response.data.response };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
@@ -31,13 +34,13 @@ const Chatbot = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-
       <div className="w-full bg-gradient-to-r from-blue-500 to-blue-400 p-8 flex items-center justify-center">
-        <h2 className="text-white text-3xl font-semibold">Welcome to Chatbot</h2>
+        <h2 className="text-white text-3xl font-semibold">
+          Welcome to Chatbot
+        </h2>
       </div>
 
       <div className="flex-1 flex flex-col bg-gray-100 p-4 border-t border-gray-300">
-
         <header className="bg-blue-400 text-white text-center py-4 font-bold text-xl rounded-lg mb-4 shadow-lg">
           Chatbot
         </header>

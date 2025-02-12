@@ -54,7 +54,9 @@ const LandingpageNavbar = () => {
           <div className="bg-[#458FF6] text-white font-bold text-xl flex justify-center items-center w-12 h-12 rounded-full">
             D
           </div>
-          <h1 className="text-2xl md:text-3xl font-semibold text-sky-700">DeAddiction</h1>
+          <h1 className="text-2xl md:text-3xl font-semibold text-sky-700">
+            DeAddict
+          </h1>
         </Link>
 
         <div className="md:hidden">
